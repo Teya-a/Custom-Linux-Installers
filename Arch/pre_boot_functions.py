@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from dependencies import *
 
 # --- Helper to convert hex color codes to ANSI escape sequences ---
@@ -14,7 +12,6 @@ def hex_to_ansi(hex_color):
 
     return f"\033[38;2;{r};{g};{b}m"
 
-
 # --- Simplified Colors (using hex codes converted to ANSI) ---
 
 RED = hex_to_ansi("#FF0000")
@@ -24,16 +21,6 @@ BLUE = hex_to_ansi("#0000FF")
 NC = "\033[0m"
 
 MAX_RETRIES = 5
-
-# Global variables (populated during execution)
-
-TARGET_DISK = ""
-USERNAME = ""
-HOSTNAME = ""
-ROOT_PASS = ""
-USER_PASS = ""
-CRYPT_NAME = "cryptroot"  # Default LUKS mapping name
-
 
 # --- Signal Handler for Ctrl+C ---
 
@@ -59,9 +46,9 @@ def run_cmd(cmd):
 
 # --- Display a Banner ---
 
-def show_banner():
+def show_logo():
     os.system("clear")
-    print(f"{GREEN}{banner}{NC}")
+    print(f"{GREEN}{logo}{NC}")
     print(f"{BLUE}Secure Arch Linux Installer v3.0{NC}\n")
 
 
@@ -277,40 +264,3 @@ def configure_mkinitcpio():
 
     run_cmd(["mkinitcpio", "-P"])
     print(f"{GREEN}mkinitcpio configuration completed.{NC}")
-
-
-# --- Main Function ---
-
-def main():
-    global TARGET_DISK, HOSTNAME, USERNAME, ROOT_PASS, USER_PASS, CRYPT_NAME
-
-    show_banner()
-
-    # Get validated inputs.
-    TARGET_DISK = get_valid_input("Enter target disk (e.g. nvme0n1 or /dev/nvme0n1):", "disk")
-    HOSTNAME = get_valid_input("Enter hostname:", "hostname")
-    USERNAME = get_valid_input("Enter username:", "username")
-
-    # Ask for LUKS mapping name (allowing empty input to use default)
-
-    CRYPT_NAME = get_valid_input("Enter LUKS mapping name (default: cryptroot):", "cryptname")
-
-    # Securely prompt for passwords.
-
-    ROOT_PASS = getpass.getpass("Enter root password: ")
-    USER_PASS = getpass.getpass("Enter user password: ")
-
-    print(f"{BLUE}[INFO] Starting disk preparation...{NC}")
-    prepare_disk(TARGET_DISK, CRYPT_NAME)
-
-    print(f"{BLUE}[INFO] Configuring GRUB bootloader...{NC}")
-    configure_grub(TARGET_DISK, CRYPT_NAME)
-
-    print(f"{BLUE}[INFO] Configuring mkinitcpio...{NC}")
-    configure_mkinitcpio()
-
-    print(f"\n{GREEN}Installation completed successfully!{NC}")
-
-
-if __name__ == "__main__":
-    main()
