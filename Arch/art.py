@@ -10,3 +10,24 @@ logo = r"""
 | )   ( || ) \ \__| (____/\| )   ( |  | (____/\___) (___| )  \  || (___) |( /   \ )  ___) (___| )  \  |/\____) |   | |   | )   ( || (____/\| (____/\| (____/\| ) \ \__
 |/     \||/   \__/(_______/|/     \|  (_______/\_______/|/    )_)(_______)|/     \|  \_______/|/    )_)\_______)   )_(   |/     \|(_______/(_______/(_______/|/   \__/
 """
+
+
+# --- Helper to convert hex color codes to ANSI escape sequences ---
+
+def hex_to_ansi(hex_color):
+    # Remove the '#' if present
+
+    hex_color = hex_color.lstrip('#')
+    r = int(hex_color[0:2], 16)
+    g = int(hex_color[2:4], 16)
+    b = int(hex_color[4:6], 16)
+
+    return f"\033[38;2;{r};{g};{b}m"
+
+# --- Simplified Colors (using hex codes converted to ANSI) ---
+
+RED = hex_to_ansi("#FF0000")
+GREEN = hex_to_ansi("#00FF00")
+YELLOW = hex_to_ansi("#FFFF00")
+BLUE = hex_to_ansi("#0000FF")
+NC = "\033[0m"
